@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # @brief   ats_coverage
-# @version v1.0.1
+# @version v1.0.2
 # @date    Fri Jul  5 09:44:18 PM CEST 2024
 # @company None, free software to use 2024
 # @author  Vladimir Roncevic <elektron.ronca@gmail.com>
