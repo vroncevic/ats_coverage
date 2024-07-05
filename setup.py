@@ -28,7 +28,7 @@ __author__ = 'Vladimir Roncevic'
 __copyright__ = '(C) 2024, https://vroncevic.github.io/ats_coverage'
 __credits__: List[str] = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 __maintainer__ = 'Vladimir Roncevic'
 __email__ = 'elektron.ronca@gmail.com'
 __status__ = 'Updated'
@@ -59,7 +59,7 @@ APPROVED_LICENSES: List[str] = [
 PYP_CLASSIFIERS: List[str] = SUPPORTED_PY_VERSIONS + APPROVED_LICENSES
 setup(
     name='ats_coverage',
-    version='1.0.1',
+    version='1.0.2',
     description='Python code coverage automation',
     author='Vladimir Roncevic',
     author_email='elektron.ronca@gmail.com',
@@ -74,7 +74,7 @@ setup(
     install_requires=['ats_utilities', 'coverage', 'pathlib'],
     package_data={
         'ats_coverage': [
-            'py.typed'
+            'py.typed',
             f'{CONF}/ats_coverage.logo',
             f'{CONF}/ats_coverage.cfg',
             f'{CONF}/ats_coverage_util.cfg',
