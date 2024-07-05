@@ -33,9 +33,8 @@ __maintainer__ = 'Vladimir Roncevic'
 __email__ = 'elektron.ronca@gmail.com'
 __status__ = 'Updated'
 
-TOOL_DIR: str = 'armpicom/'
+TOOL_DIR: str = 'ats_coverage/'
 CONF: str = 'conf'
-TEMPLATE: str = 'conf/template'
 LOG: str = 'log'
 THIS_DIR: str = abspath(dirname(__file__))
 long_description: Optional[str] = None
@@ -78,7 +77,8 @@ setup(
             'py.typed'
             f'{CONF}/ats_coverage.logo',
             f'{CONF}/ats_coverage.cfg',
-            f'{CONF}/ats_coverage_util.cfg'
+            f'{CONF}/ats_coverage_util.cfg',
+            f'{LOG}/ats_coverage.log'
         ]
     },
     data_files=[(
