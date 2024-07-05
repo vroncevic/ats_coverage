@@ -28,11 +28,15 @@ __author__ = 'Vladimir Roncevic'
 __copyright__ = '(C) 2024, https://vroncevic.github.io/ats_coverage'
 __credits__: List[str] = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 __maintainer__ = 'Vladimir Roncevic'
 __email__ = 'elektron.ronca@gmail.com'
 __status__ = 'Updated'
 
+TOOL_DIR: str = 'armpicom/'
+CONF: str = 'conf'
+TEMPLATE: str = 'conf/template'
+LOG: str = 'log'
 THIS_DIR: str = abspath(dirname(__file__))
 long_description: Optional[str] = None
 with open(join(THIS_DIR, 'README.md'), encoding='utf-8') as readme:
@@ -56,7 +60,7 @@ APPROVED_LICENSES: List[str] = [
 PYP_CLASSIFIERS: List[str] = SUPPORTED_PY_VERSIONS + APPROVED_LICENSES
 setup(
     name='ats_coverage',
-    version='1.0.0',
+    version='1.0.1',
     description='Python code coverage automation',
     author='Vladimir Roncevic',
     author_email='elektron.ronca@gmail.com',
@@ -72,6 +76,14 @@ setup(
     package_data={
         'ats_coverage': [
             'py.typed'
+            f'{CONF}/ats_coverage.logo',
+            f'{CONF}/ats_coverage.cfg',
+            f'{CONF}/ats_coverage_util.cfg'
         ]
-    }
+    },
+    data_files=[(
+        '/usr/local/bin/', [
+            f'{TOOL_DIR}run/ats_coverage_run.py'
+        ]
+    )]
 )
