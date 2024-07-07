@@ -21,14 +21,14 @@ Info
 '''
 
 import sys
-from typing import List, Dict
+from typing import Any, List, Dict
 from os.path import dirname, realpath
 from argparse import Namespace
 
 try:
     from ats_utilities.splash import Splash
     from ats_utilities.logging import ATSLogger
-    from ats_utilities.cli.cfg_cli import CfgCLI
+    from ats_utilities.cli import ATSCli
     from ats_utilities.console_io.error import error_message
     from ats_utilities.console_io.verbose import verbose_message
     from ats_utilities.console_io.success import success_message
@@ -43,13 +43,13 @@ __author__ = 'Vladimir Roncevic'
 __copyright__ = '(C) 2024, https://vroncevic.github.io/ats_coverage'
 __credits__: List[str] = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 __maintainer__ = 'Vladimir Roncevic'
 __email__ = 'elektron.ronca@gmail.com'
 __status__ = 'Updated'
 
 
-class ATSCoverage(CfgCLI):
+class ATSCoverage(ATSCli):
     '''
         Defines class ATSCoverage with attribute(s) and method(s).
         Loads a base info, creates a CLI interface and run operations.
@@ -99,9 +99,9 @@ class ATSCoverage(CfgCLI):
             verbose, [f'{self._TOOL_VERBOSE.lower()} init tool info']
         )
         self._logger: ATSLogger = ATSLogger(
-            self._TOOL_VERBOSE.lower(), f'{current_dir}{self._LOG}', verbose
+            self._TOOL_VERBOSE.lower(), True, None, True, verbose
         )
-        if self.tool_operational:
+        if self.is_operational():
             self.add_new_option(
                 self._OPS[0], self._OPS[1], dest='name',
                 help='generate coverage report for project (provide name)'
@@ -126,9 +126,9 @@ class ATSCoverage(CfgCLI):
             :exceptions: None
         '''
         status: bool = False
-        if self.tool_operational:
+        if self.is_operational():
             try:
-                args: Namespace = self.parse_args(sys.argv)
+                args: Any | Namespace = self.parse_args(sys.argv)
                 if not bool(getattr(args, 'name')):
                     error_message(
                         [f'{self._TOOL_VERBOSE.lower()} missing name argument']

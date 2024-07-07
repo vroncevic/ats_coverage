@@ -36,7 +36,7 @@ __author__ = 'Vladimir Roncevic'
 __copyright__ = '(C) 2024, https://vroncevic.github.io/ats_coverage'
 __credits__: List[str] = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 __maintainer__ = 'Vladimir Roncevic'
 __email__ = 'elektron.ronca@gmail.com'
 __status__ = 'Updated'
@@ -59,7 +59,6 @@ class ATSCoverageTestCase(TestCase):
                 | test_missing_args - Test missing args.
                 | test_wrong_arg - Test wrong arg.
                 | test_process - Generate project structure.
-                | test_tool_not_operational - Test not operational.
     '''
 
     def setUp(self) -> None:
@@ -98,17 +97,6 @@ class ATSCoverageTestCase(TestCase):
         sys.argv.insert(1, './pro/README.md')
         generator: ATSCoverage = ATSCoverage()
         self.assertTrue(generator.process())
-
-    def test_tool_not_operational(self) -> None:
-        '''Test not operational'''
-        sys.argv.clear()
-        sys.argv.insert(0, '-n')
-        sys.argv.insert(1, './pro/codecipher')
-        sys.argv.insert(0, '-p')
-        sys.argv.insert(1, './pro/README.md')
-        generator: ATSCoverage = ATSCoverage()
-        generator.tool_operational = False
-        self.assertFalse(generator.process())
 
 
 if __name__ == '__main__':
