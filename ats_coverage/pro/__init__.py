@@ -4,7 +4,7 @@
 Module
     __init__.py
 Copyright
-    Copyright (C) 2024 Vladimir Roncevic <elektron.ronca@gmail.com>
+    Copyright (C) 2024 - 2025 Vladimir Roncevic <elektron.ronca@gmail.com>
     ats_coverage is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by the
     Free Software Foundation, either version 3 of the License, or
@@ -22,30 +22,29 @@ Info
 
 import sys
 from typing import Any, Dict, List, Optional
-from os.path import exists, basename
+from os.path import exists
 from json import load
 from unittest import TestLoader, TestSuite, TextTestRunner
 
 try:
-    from pathlib import Path
     from ats_utilities.checker import ATSChecker
     from ats_utilities.console_io.verbose import verbose_message
     from ats_utilities.console_io.success import success_message
     from ats_utilities.exceptions.ats_type_error import ATSTypeError
     from ats_utilities.exceptions.ats_file_error import ATSFileError
     from coverage import Coverage
-except ImportError as ats_error_message:
+except ImportError as ats_error_message:  # pragma: no cover
     # Force exit python #######################################################
-    sys.exit(f'\n{__file__}\n{ats_error_message}\n')
+    sys.exit(f'\n{__file__}\n{ats_error_message}\n')  # pragma: no cover
 
-__author__ = 'Vladimir Roncevic'
-__copyright__ = '(C) 2024, https://vroncevic.github.io/ats_coverage'
+__author__: str = 'Vladimir Roncevic'
+__copyright__: str = '(C) 2025, https://vroncevic.github.io/ats_coverage'
 __credits__: List[str] = ['Vladimir Roncevic', 'Python Software Foundation']
-__license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__ = '1.0.3'
-__maintainer__ = 'Vladimir Roncevic'
-__email__ = 'elektron.ronca@gmail.com'
-__status__ = 'Updated'
+__license__: str = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
+__version__: str = '1.0.4'
+__maintainer__: str = 'Vladimir Roncevic'
+__email__: str = 'elektron.ronca@gmail.com'
+__status__: str = 'Updated'
 
 
 class ProCoverage(ATSChecker):
@@ -74,15 +73,17 @@ class ProCoverage(ATSChecker):
     _COVER: str = 'percent_covered_display'
 
     def __init__(
-        self, pro_name: str, readme_path: str, verbose: bool = False
+        self, name: str, unitdir: str, readme: str, verbose: bool = False
     ) -> None:
         '''
             Initials ProCoverage constructor.
 
-            :param pro_name: Project name
-            :type pro_name: <str>
-            :param readme_path: Readme file path
-            :type readme_path: <str>
+            :param name: Project name
+            :type name: <str>
+            :param unitdir: Project unit dir
+            :type unitdir: <str>
+            :param readme: Readme file path
+            :type readme: <str>
             :param verbose: Enable/Disable verbose option
             :type verbose: <bool>
             :exceptions: ATSTypeError | ATSFileError
@@ -91,31 +92,33 @@ class ProCoverage(ATSChecker):
         error_msg: Optional[str] = None
         error_id: Optional[int] = None
         error_msg, error_id = self.check_params([
-            ('str:pro_name', pro_name), ('str:readme_path', readme_path)
+            ('str:name', name),
+            ('str:unitdir', unitdir),
+            ('str:readme', readme)
         ])
         if error_id == self.TYPE_ERROR:
             raise ATSTypeError(error_msg)
-        if not exists(f'{pro_name}'):
-            raise ATSFileError(f'missing {pro_name}')
-        if not exists(f'{readme_path}'):
-            raise ATSFileError(f'missing {readme_path}')
-        cov = Coverage(source=[f'{pro_name}'])
+        if not exists(f'{unitdir}'):
+            raise ATSFileError(f'missing {unitdir}')
+        if not exists(f'{readme}'):
+            raise ATSFileError(f'missing {readme}')
+        cov = Coverage(source=[f'{unitdir}'])
         cov.start()
         tests: TestSuite = TestLoader().discover(
-            f'{pro_name}/../', pattern='*_test.py'
+            f'{unitdir}', pattern='*_test.py'
         )
         test_runner = TextTestRunner(verbosity=2)
         test_runner.run(tests)
         cov.stop()
         cov.save()
-        self._report_file_name: str = f'{pro_name}_coverage.json'
-        self._readme_path: str = readme_path
+        self._report_file_name: str = f'{name}_coverage.json'
+        self._readme_path: str = readme
         self._inside_block: bool = False
         verbose_message(
             verbose, [
                 f'{self._TOOL_VERBOSE.lower()}',
-                f'prepare code coverage for {pro_name}',
-                f'update {readme_path}'
+                f'prepare code coverage for {name}',
+                f'update {readme}'
             ]
         )
         cov.json_report(outfile=self._report_file_name)
@@ -142,42 +145,6 @@ class ProCoverage(ATSChecker):
         )
         return data
 
-    def find_root(
-        self, module_path: str, verbose: bool = False
-    ) -> Optional[Path]:
-        '''
-            Finds root package for project structure.
-
-            :param module_path: Absolute path
-            :type module_path: <str>
-            :param verbose: Enable/Disable verbose option
-            :type verbose: <bool>
-            :return: Root package for module path
-            :rtype: <Optional[Path]>
-            :exceptions: ATSTypeError
-        '''
-        error_msg: Optional[str] = None
-        error_id: Optional[int] = None
-        error_msg, error_id = self.check_params([(
-            'str:module_path', module_path
-        )])
-        if error_id == self.TYPE_ERROR:
-            raise ATSTypeError(error_msg)
-        root: Optional[Path] = None
-        path: Path = Path(module_path).resolve()
-        while path.parent != path:
-            if (path / '__init__.py').exists():
-                root = path
-            path = path.parent
-        verbose_message(
-            verbose, [
-                f'{self._TOOL_VERBOSE.lower()}',
-                f' module path {module_path}',
-                f'root package {root}'
-            ]
-        )
-        return root
-
     def update_readme(self, verbose: bool = False) -> bool:
         '''
             Updates README.md file with code coverage.
@@ -193,7 +160,7 @@ class ProCoverage(ATSChecker):
         with open(self._readme_path, 'r', encoding='utf-8') as current_file:
             lines = current_file.readlines()
         new_lines: List[str] = []
-        coverage: Dict[str, Any] = self.load_report()
+        coverage: Dict[str, Any] = self.load_report(verbose)
         for line in lines:
             if self._START_MARKER in line:
                 self._inside_block = True
@@ -202,19 +169,17 @@ class ProCoverage(ATSChecker):
                 new_lines.append('| Name | Stmts | Miss | Cover |\n')
                 new_lines.append('|------|-------|------|-------|\n')
                 file_names: List[str] = coverage['files']
+                stmts: str = 'num_statements'
+                miss: str = 'missing_lines'
+                cover: str = 'percent_covered_display'
                 for name in file_names:
-                    root_package: str = basename(str(self.find_root(name)))
-                    module: str = name[len(root_package):]
                     file_summary: Dict[str, Any] = coverage['files'][name]
-                    report_line: str = f'| `{module}` |'
-                    statements: str = file_summary['summary'][self._STMTS]
-                    missing: str = file_summary['summary'][self._MISS]
-                    covered: str = file_summary['summary'][self._COVER]
-                    report_line += f' {statements} |'
-                    report_line += f' {missing} |'
-                    report_line += f' {covered}% |\n'
-                    new_lines.append(report_line)
-                    verbose_message(verbose, [report_line])
+                    statements: str = file_summary['summary'][stmts]
+                    missing: str = file_summary['summary'][miss]
+                    covered: str = file_summary['summary'][cover]
+                    new_lines.append(
+                        f'| `{name}` | {statements} | {missing} | {covered}%|\n'
+                    )
                 total: str = '| **Total** |'
                 total_statements: str = coverage['totals'][self._STMTS]
                 total_missing: str = coverage['totals'][self._MISS]

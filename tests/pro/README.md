@@ -239,29 +239,35 @@ Package structure
 
 | Name | Stmts | Miss | Cover |
 |------|-------|------|-------|
-| `pher/__init__.py` | 0 | 0 | 100% |
-| `pher/a1z52n62/__init__.py` | 18 | 2 | 89% |
-| `pher/a1z52n62/decode.py` | 32 | 2 | 94% |
-| `pher/a1z52n62/encode.py` | 32 | 2 | 94% |
-| `pher/atbs/__init__.py` | 18 | 2 | 89% |
-| `pher/atbs/decode.py` | 31 | 4 | 87% |
-| `pher/atbs/encode.py` | 31 | 4 | 87% |
-| `pher/atbs/lookup_table.py` | 10 | 0 | 100% |
-| `pher/b64/__init__.py` | 18 | 2 | 89% |
-| `pher/b64/decode.py` | 24 | 2 | 92% |
-| `pher/b64/encode.py` | 24 | 2 | 92% |
-| `pher/caesar/__init__.py` | 18 | 2 | 89% |
-| `pher/caesar/decode.py` | 41 | 2 | 95% |
-| `pher/caesar/encode.py` | 41 | 2 | 95% |
-| `pher/vernam/__init__.py` | 18 | 2 | 89% |
-| `pher/vernam/decode.py` | 36 | 2 | 94% |
-| `pher/vernam/encode.py` | 36 | 2 | 94% |
-| `pher/vigenere/__init__.py` | 19 | 2 | 89% |
-| `pher/vigenere/decode.py` | 39 | 4 | 90% |
-| `pher/vigenere/encode.py` | 39 | 4 | 90% |
-| `pher/vigenere/key_generator.py` | 37 | 2 | 95% |
-| `pher/vigenere/lookup_table.py` | 16 | 0 | 100% |
-| **Total** | 578 | 46 | 92% |
+| `pro/a1z52n62_test.py` | 43 | 3 | 93%|
+| `pro/atbs_test.py` | 43 | 3 | 93%|
+| `pro/b64_test.py` | 43 | 3 | 93%|
+| `pro/caesar_test.py` | 43 | 3 | 93%|
+| `pro/codecipher/__init__.py` | 0 | 0 | 100%|
+| `pro/codecipher/a1z52n62/__init__.py` | 16 | 0 | 100%|
+| `pro/codecipher/a1z52n62/decode.py` | 32 | 2 | 94%|
+| `pro/codecipher/a1z52n62/encode.py` | 32 | 2 | 94%|
+| `pro/codecipher/atbs/__init__.py` | 16 | 0 | 100%|
+| `pro/codecipher/atbs/decode.py` | 29 | 2 | 93%|
+| `pro/codecipher/atbs/encode.py` | 29 | 2 | 93%|
+| `pro/codecipher/atbs/lookup_table.py` | 10 | 0 | 100%|
+| `pro/codecipher/b64/__init__.py` | 16 | 0 | 100%|
+| `pro/codecipher/b64/decode.py` | 24 | 2 | 92%|
+| `pro/codecipher/b64/encode.py` | 24 | 2 | 92%|
+| `pro/codecipher/caesar/__init__.py` | 16 | 0 | 100%|
+| `pro/codecipher/caesar/decode.py` | 41 | 2 | 95%|
+| `pro/codecipher/caesar/encode.py` | 41 | 2 | 95%|
+| `pro/codecipher/vernam/__init__.py` | 16 | 0 | 100%|
+| `pro/codecipher/vernam/decode.py` | 36 | 2 | 94%|
+| `pro/codecipher/vernam/encode.py` | 36 | 2 | 94%|
+| `pro/codecipher/vigenere/__init__.py` | 17 | 0 | 100%|
+| `pro/codecipher/vigenere/decode.py` | 37 | 2 | 95%|
+| `pro/codecipher/vigenere/encode.py` | 37 | 2 | 95%|
+| `pro/codecipher/vigenere/key_generator.py` | 37 | 2 | 95%|
+| `pro/codecipher/vigenere/lookup_table.py` | 16 | 0 | 100%|
+| `pro/vernam_test.py` | 43 | 3 | 93%|
+| `pro/vigenere_test.py` | 46 | 3 | 93%|
+| **Total** | 819 | 44 | 95% |
 
 ### Docs
 

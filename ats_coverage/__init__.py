@@ -4,7 +4,7 @@
 Module
     __init__.py
 Copyright
-    Copyright (C) 2024 Vladimir Roncevic <elektron.ronca@gmail.com>
+    Copyright (C) 2024 - 2025 Vladimir Roncevic <elektron.ronca@gmail.com>
     ats_coverage is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by the
     Free Software Foundation, either version 3 of the License, or
@@ -35,18 +35,18 @@ try:
     from ats_utilities.exceptions.ats_type_error import ATSTypeError
     from ats_utilities.exceptions.ats_value_error import ATSValueError
     from ats_coverage.pro import ProCoverage
-except ImportError as ats_error_message:
-    # Force close python ATS ##################################################
-    sys.exit(f'\n{__file__}\n{ats_error_message}\n')
+except ImportError as ats_error_message:  # pragma: no cover
+    # Force exit python #######################################################
+    sys.exit(f'\n{__file__}\n{ats_error_message}\n')  # pragma: no cover
 
-__author__ = 'Vladimir Roncevic'
-__copyright__ = '(C) 2024, https://vroncevic.github.io/ats_coverage'
+__author__: str = 'Vladimir Roncevic'
+__copyright__: str = '(C) 2025, https://vroncevic.github.io/ats_coverage'
 __credits__: List[str] = ['Vladimir Roncevic', 'Python Software Foundation']
-__license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__ = '1.0.3'
-__maintainer__ = 'Vladimir Roncevic'
-__email__ = 'elektron.ronca@gmail.com'
-__status__ = 'Updated'
+__license__: str = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
+__version__: str = '1.0.4'
+__maintainer__: str = 'Vladimir Roncevic'
+__email__: str = 'elektron.ronca@gmail.com'
+__status__: str = 'Updated'
 
 
 class ATSCoverage(ATSCli):
@@ -73,7 +73,7 @@ class ATSCoverage(ATSCli):
     _LOG: str = '/log/ats_coverage.log'
     _LOGO: str = '/conf/ats_coverage.logo'
     _OPS: List[str] = [
-        '-n', '--name', '-p', '--path', '-v', '--verbose'
+        '-n', '--name', '-d', '--dir', '-r', '--readme', '-v', '--verbose'
     ]
 
     def __init__(self, verbose: bool = False) -> None:
@@ -107,11 +107,15 @@ class ATSCoverage(ATSCli):
                 help='generate coverage report for project (provide name)'
             )
             self.add_new_option(
-                self._OPS[2], self._OPS[3], dest='path',
+                self._OPS[2], self._OPS[3], dest='unitdir',
+                help='path to untits (provide path)'
+            )
+            self.add_new_option(
+                self._OPS[4], self._OPS[5], dest='readme',
                 help='path to README.md file (provide path)'
             )
             self.add_new_option(
-                self._OPS[4], self._OPS[5], action='store_true',
+                self._OPS[6], self._OPS[7], action='store_true',
                 default=False, help='Activate verbose mode for tool'
             )
 
@@ -131,18 +135,24 @@ class ATSCoverage(ATSCli):
                 args: Any | Namespace = self.parse_args(sys.argv)
                 if not bool(getattr(args, 'name')):
                     error_message(
-                        [f'{self._TOOL_VERBOSE.lower()} missing name argument']
+                        [f'{self._TOOL_VERBOSE.lower()} missing pro name']
                     )
                     return status
-                if not bool(getattr(args, 'path')):
+                if not bool(getattr(args, 'unitdir')):
                     error_message(
-                        [f'{self._TOOL_VERBOSE.lower()} missing path argument']
+                        [f'{self._TOOL_VERBOSE.lower()} missing unit dir']
+                    )
+                    return status
+                if not bool(getattr(args, 'readme')):
+                    error_message(
+                        [f'{self._TOOL_VERBOSE.lower()} missing readme path']
                     )
                     return status
                 try:
                     tool: ProCoverage = ProCoverage(
                         getattr(args, 'name'),
-                        getattr(args, 'path'),
+                        getattr(args, 'unitdir'),
+                        getattr(args, 'readme'),
                         getattr(args, 'verbose') or verbose
                     )
                     status = tool.update_readme(
@@ -154,7 +164,7 @@ class ATSCoverage(ATSCli):
                 if status:
                     success_message([f'{self._TOOL_VERBOSE.lower()} done\n'])
                     self._logger.write_log(
-                        f'generate coverage for {getattr(args, "name")} done',
+                        f'generated coverage for {getattr(args, "unitdir")}',
                         self._logger.ATS_INFO
                     )
                 else:
@@ -166,7 +176,7 @@ class ATSCoverage(ATSCli):
                 error_message(
                     [
                         f'{self._TOOL_VERBOSE.lower()}',
-                        'expected arguments project name and readme path'
+                        'expected arguments project unitdir and readme path'
                     ]
                 )
                 return status
