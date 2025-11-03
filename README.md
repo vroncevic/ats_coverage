@@ -23,6 +23,7 @@ other information that should be provided before the modules are installed.
     - [Install using docker](#install-using-docker)
 - [Dependencies](#dependencies)
 - [Tool structure](#tool-structure)
+- [Code coverage](#code-coverage)
 - [Docs](#docs)
 - [Contributing](#contributing)
 - [Copyright and licence](#copyright-and-licence)
@@ -132,9 +133,9 @@ Tool structure
 
 | Name                              |    Stmts |     Miss |   Cover |
 |---------------------------------- | -------: | -------: | ------: |
-| ats\_coverage/\_\_init\_\_.py     |       70 |       12 |     83% |
-| ats\_coverage/pro/\_\_init\_\_.py |      124 |       11 |     91% |
-|                         **TOTAL** |  **194** |   **23** | **88%** |
+| ats\_coverage/\_\_init\_\_.py     |       72 |       14 |     81% |
+| ats\_coverage/pro/\_\_init\_\_.py |      101 |        7 |     93% |
+|                         **TOTAL** |  **173** |   **21** | **88%** |
 
 ### Docs
 
@@ -153,7 +154,7 @@ More documentation and info at
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Copyright (C) 2024 by [vroncevic.github.io/ats_coverage](https://vroncevic.github.io/ats_coverage)
+Copyright (C) 2024 - 2025 by [vroncevic.github.io/ats_coverage](https://vroncevic.github.io/ats_coverage)
 
 **ats_coverage** is free software; you can redistribute it and/or modify
 it under the same terms as Python itself, either Python version 3.x or,

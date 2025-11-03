@@ -4,7 +4,7 @@
 Module
     encode.py
 Copyright
-    Copyright (C) 2021 - 2024 Vladimir Roncevic <elektron.ronca@gmail.com>
+    Copyright (C) 2021 - 2025 Vladimir Roncevic <elektron.ronca@gmail.com>
     codecipher is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by the
     Free Software Foundation, either version 3 of the License, or
@@ -24,14 +24,14 @@ from dataclasses import dataclass, field
 from base64 import b64encode
 from typing import List, Optional
 
-__author__ = 'Vladimir Roncevic'
-__copyright__ = '(C) 2024, https://electux.github.io/codecipher'
+__author__: str = 'Vladimir Roncevic'
+__copyright__: str = '(C) 2025, https://electux.github.io/codecipher'
 __credits__: List[str] = ['Vladimir Roncevic', 'Python Software Foundation']
-__license__ = 'https://github.com/electux/codecipher/blob/main/LICENSE'
-__version__ = '1.4.7'
-__maintainer__ = 'Vladimir Roncevic'
-__email__ = 'elektron.ronca@gmail.com'
-__status__ = 'Updated'
+__license__: str = 'https://github.com/electux/codecipher/blob/main/LICENSE'
+__version__: str = '1.4.9'
+__maintainer__: str = 'Vladimir Roncevic'
+__email__: str = 'elektron.ronca@gmail.com'
+__status__: str = 'Updated'
 
 
 @dataclass
