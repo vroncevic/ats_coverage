@@ -23,7 +23,7 @@ Info
 from typing import List, Dict
 
 __author__: str = 'Vladimir Roncevic'
-__copyright__: str = '(C) 2025, https://electux.github.io/codecipher'
+__copyright__: str = '(C) 2026, https://electux.github.io/codecipher'
 __credits__: List[str] = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__: str = 'https://github.com/electux/codecipher/blob/main/LICENSE'
 __version__: str = '1.4.9'
