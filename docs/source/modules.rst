@@ -1,7 +1,6 @@
-ats_coverage
-============
+github
+======
 
 .. toctree::
    :maxdepth: 4
 
-   ats_coverage

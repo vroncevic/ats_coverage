@@ -20,35 +20,32 @@ Info
     Defines setup for package ats_coverage.
 '''
 
-from typing import List, Optional
 from os.path import abspath, dirname, join
 from setuptools import setup
 
 __author__: str = 'Vladimir Roncevic'
 __copyright__: str = '(C) 2026, https://vroncevic.github.io/ats_coverage'
-__credits__: List[str] = ['Vladimir Roncevic', 'Python Software Foundation']
+__credits__: list[str] = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__: str = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__: str = '1.0.5'
+__version__: str = '2.0.0'
 __maintainer__: str = 'Vladimir Roncevic'
 __email__: str = 'elektron.ronca@gmail.com'
 __status__: str = 'Updated'
 
-TOOL_DIR: str = 'ats_coverage/'
-CONF: str = 'conf'
-LOG: str = 'log'
 THIS_DIR: str = abspath(dirname(__file__))
-long_description: Optional[str] = None
+long_description: str | None = None
+
 with open(join(THIS_DIR, 'README.md'), encoding='utf-8') as readme:
     long_description = readme.read()
+
 PROGRAMMING_LANG: str = 'Programming Language :: Python ::'
-VERSIONS: List[str] = ['3.10', '3.11', '3.12']
-SUPPORTED_PY_VERSIONS: List[str] = [
-    f'{PROGRAMMING_LANG} {VERSION}' for VERSION in VERSIONS
-]
-PYP_CLASSIFIERS: List[str] = SUPPORTED_PY_VERSIONS
+VERSIONS: list[str] = ['3.12', '3.13', '3.14']
+SUPPORTED_PY_VERSIONS: list[str] = [f'{PROGRAMMING_LANG} {VERSION}' for VERSION in VERSIONS]
+PYP_CLASSIFIERS: list[str] = SUPPORTED_PY_VERSIONS
+
 setup(
     name='ats_coverage',
-    version='1.0.5',
+    version='2.0.0',
     description='Python code coverage automation',
     author='Vladimir Roncevic',
     author_email='elektron.ronca@gmail.com',
@@ -59,20 +56,12 @@ setup(
     keywords='code, coverage, automation',
     platforms='any',
     classifiers=PYP_CLASSIFIERS,
-    packages=['ats_coverage', 'ats_coverage.pro'],
+    py_modules=['ats_coverage'],
     install_requires=['ats_utilities', 'coverage'],
-    package_data={
-        'ats_coverage': [
-            'py.typed',
-            f'{CONF}/ats_coverage.logo',
-            f'{CONF}/ats_coverage.cfg',
-            f'{CONF}/ats_coverage_util.cfg',
-            f'{LOG}/ats_coverage.log'
-        ]
-    },
-    data_files=[(
-        '/usr/local/bin/', [
-            f'{TOOL_DIR}run/ats_coverage_run.py'
-        ]
-    )]
+    data_files=[('', ['py.typed'])],
+    entry_points={
+        'console_scripts': [
+            'ats_coverage=ats_coverage:main',
+        ],
+    }
 )
