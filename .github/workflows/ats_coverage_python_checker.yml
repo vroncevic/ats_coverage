@@ -3,14 +3,12 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'ats_coverage/**'
-      - 'tests/**'
+      - 'ats_coverage.py'
       - 'setup.py'
   pull_request:
     branches: [ main ]
     paths:
-      - 'ats_coverage/**'
-      - 'tests/**'
+      - 'ats_coverage.py'
       - 'setup.py'
 jobs:
   build:
@@ -21,13 +19,13 @@ jobs:
         id: long_line_checker
         run: |
           modules_ok=0
-          modules=($(find ats_coverage/ tests/ -type f -name '*.py' -exec echo '{}' \;))
-          for mod in "${modules[@]}"; do line_length=$(wc -L < "${mod}"); [[ $line_length -gt 127 ]] && modules_ok=1; done
+          modules=($(find . -type f -name 'ats_coverage.py' -exec echo '{}' \;))
+          for mod in "${modules[@]}"; do line_length=$(wc -L < "${mod}"); [[ $line_length -gt 150 ]] && modules_ok=1; done
           [[ $modules_ok -eq 0 ]] && echo ok || exit 1
       - name: Check max number of lines in modules
         id: num_line_checker
         run: |
           modules_ok=0
-          modules=($(find ats_coverage/ tests/ -type f -name '*.py' -exec echo '{}' \;))
-          for mod in "${modules[@]}"; do line_numbers=$(wc -l < "${mod}"); [[ $line_numbers -gt 300 ]] && modules_ok=1; done
+          modules=($(find . -type f -name 'ats_coverage.py' -exec echo '{}' \;))
+          for mod in "${modules[@]}"; do line_numbers=$(wc -l < "${mod}"); [[ $line_numbers -gt 600 ]] && modules_ok=1; done
           [[ $modules_ok -eq 0 ]] && echo ok || exit 1

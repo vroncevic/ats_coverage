@@ -39,8 +39,7 @@ RUN rm -f get-pip.py
 COPY requirements.txt /
 RUN pip3 install -r requirements.txt
 RUN rm -f requirements.txt
-RUN mkdir /ats_coverage/
-COPY ats_coverage /ats_coverage/
+COPY ats_coverage.py /
 COPY setup.py /
 COPY README.md /
 COPY LICENSE /

@@ -90,21 +90,9 @@ Tool structure
 
 .. code-block:: bash
 
-    ats_coverage/
-         ├── conf/
-         │   ├── ats_coverage.cfg
-         │   ├── ats_coverage.logo
-         │   └── ats_coverage_util.cfg
-         ├── __init__.py
-         ├── log/
-         │   └── ats_coverage.log
-         ├── pro/
-         │   └── __init__.py
-         ├── py.typed
-         └── run/
-             └── ats_coverage_run.py
+    ats_coverage.py
 
-    5 directories, 8 files
+     0 directories, 1 files
 
 Copyright and licence
 -----------------------

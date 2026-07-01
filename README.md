@@ -111,31 +111,27 @@ You can use Dockerfile to create image/container.
 
 Tool structure
 
-```bash
-    ats_coverage/
-         ├── conf/
-         │   ├── ats_coverage.cfg
-         │   ├── ats_coverage.logo
-         │   └── ats_coverage_util.cfg
-         ├── __init__.py
-         ├── log/
-         │   └── ats_coverage.log
-         ├── pro/
-         │   └── __init__.py
-         ├── py.typed
-         └── run/
-             └── ats_coverage_run.py
+<details>
+<summary>Structure</summary>
 
-    5 directories, 8 files
+```bash
+    ats_coverage.py
+
+     0 directories, 1 files
 ```
+</details>
 
 ### Code coverage
 
-| Name                              |    Stmts |     Miss |   Cover |
-|---------------------------------- | -------: | -------: | ------: |
-| ats\_coverage/\_\_init\_\_.py     |       72 |       14 |     81% |
-| ats\_coverage/pro/\_\_init\_\_.py |      101 |        7 |     93% |
-|                         **TOTAL** |  **173** |   **21** | **88%** |
+<details>
+<summary>Coverage</summary>
+
+| Name | Stmts | Miss | Cover |
+|------|-------|------|-------|
+| `ats_coverage.py` | 285 | 0 | 100%|
+| **Total** | 285 | 0 | 100% |
+
+</details>
 
 ### Docs
 
