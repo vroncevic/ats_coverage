@@ -33,8 +33,8 @@ other information that should be provided before the tool is installed.
    self
    modules
 
-Installation
--------------
+🚀 Installation
+-----------------
 
 |ats_coverage python3 build|
 
@@ -71,18 +71,17 @@ You can use Docker to create image/container, or You can use pip to install
     # pyton3
     pip3 install ats_coverage
 
-Dependencies
--------------
+📦 Dependencies
+-----------------
 
 **ats_coverage** requires next modules and libraries
 
-* `ats-utilities - Python App/Tool/Script Utilities <https://pypi.org/project/ats-utilities/>`_
 * `coverage - Code coverage measurement for Python <https://pypi.org/project/coverage/>`_
 * `pathlib - Object-oriented filesystem paths <https://pypi.org/project/pathlib/>`_
 
 
-Tool structure
----------------
+📁 Tool structure
+-------------------
 
 **ats_coverage** is based on OOP.
 
@@ -94,38 +93,3 @@ Tool structure
 
      0 directories, 1 files
 
-Copyright and licence
------------------------
-
-|license: gpl v3| |license: apache 2.0|
-
-.. |license: gpl v3| image:: https://img.shields.io/badge/license-gplv3-blue.svg
-   :target: https://www.gnu.org/licenses/gpl-3.0
-
-.. |license: apache 2.0| image:: https://img.shields.io/badge/license-apache%202.0-blue.svg
-   :target: https://opensource.org/licenses/apache-2.0
-
-Copyright (C) 2024 - 2026 by `vroncevic.github.io/ats_coverage <https://vroncevic.github.io/ats_coverage>`_
-
-**ats_coverage** is free software; you can redistribute it and/or modify
-it under the same terms as Python itself, either Python version 3.x or,
-at your option, any later version of Python 3 you may have available.
-
-Lets help and support PSF.
-
-|python software foundation|
-
-.. |python software foundation| image:: https://raw.githubusercontent.com/vroncevic/ats_coverage/dev/docs/psf-logo-alpha.png
-   :target: https://www.python.org/psf/
-
-|donate|
-
-.. |donate| image:: https://www.paypalobjects.com/en_us/i/btn/btn_donatecc_lg.gif
-   :target: https://www.python.org/psf/donations/
-
-Indices and tables
-------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

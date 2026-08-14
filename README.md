@@ -16,22 +16,21 @@ other information that should be provided before the modules are installed.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Installation](#installation)
+- [🚀 Installation](#-installation)
     - [Install using pip](#install-using-pip)
     - [Install using build](#install-using-build)
     - [Install using py setup](#install-using-py-setup)
     - [Install using docker](#install-using-docker)
-- [Dependencies](#dependencies)
-- [Tool structure](#tool-structure)
-- [Code coverage](#code-coverage)
-- [Docs](#docs)
-- [Contributing](#contributing)
-- [Copyright and licence](#copyright-and-licence)
+- [📦 Dependencies](#-dependencies)
+- [📁 Tool structure](#-tool-structure)
+- [📊 Code coverage](#-code-coverage)
+- [📚 Docs](#-docs)
+- [👥 Contributing](#-contributing)
+- [📄 Copyright and licence](#-copyright-and-licence)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-### Installation
-
+### 🚀 Installation
 Used next development environment
 
 ![debian linux os](https://raw.githubusercontent.com/vroncevic/ats_coverage/dev/docs/debtux.png)
@@ -97,16 +96,13 @@ python3 setup.py install_egg_info
 
 You can use Dockerfile to create image/container.
 
-### Dependencies
-
+### 📦 Dependencies
 **ats_coverage** requires next modules and libraries
 
-* [ats-utilities - Python App/Tool/Script Utilities](https://pypi.org/project/ats-utilities/)
 * [coverage - Code coverage measurement for Python.](https://pypi.org/project/coverage/)
 * [pathlib - Object-oriented filesystem paths](https://pypi.org/project/pathlib/)
 
-### Tool structure
-
+### 📁 Tool structure
 **ats_coverage** is based on OOP.
 
 Tool structure
@@ -121,20 +117,18 @@ Tool structure
 ```
 </details>
 
-### Code coverage
-
+### 📊 Code coverage
 <details>
 <summary>Coverage</summary>
 
 | Name | Stmts | Miss | Cover |
 |------|-------|------|-------|
-| `ats_coverage.py` | 285 | 0 | 100%|
-| **Total** | 285 | 0 | 100% |
+| `` | 287 | 85 | 70%|
+| **Total** | 287 | 85 | 70% |
 
 </details>
 
-### Docs
-
+### 📚 Docs
 [![Documentation Status](https://readthedocs.org/projects/ats_coverage/badge/?version=latest)](https://ats-coverage.readthedocs.io/en/latest/?badge=latest)
 
 More documentation and info at
@@ -142,12 +136,10 @@ More documentation and info at
 * [ats_coverage.readthedocs.io](https://ats-coverage.readthedocs.io)
 * [www.python.org](https://www.python.org/)
 
-### Contributing
-
+### 👥 Contributing
 [Contributing to ats_coverage](CONTRIBUTING.md)
 
-### Copyright and licence
-
+### 📄 Copyright and licence
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Copyright (C) 2024 - 2026 by [vroncevic.github.io/ats_coverage](https://vroncevic.github.io/ats_coverage)
