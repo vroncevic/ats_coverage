@@ -93,3 +93,38 @@ Tool structure
 
      0 directories, 1 files
 
+Copyright and licence
+-----------------------
+
+|license: gpl v3| |license: apache 2.0|
+
+.. |license: gpl v3| image:: https://img.shields.io/badge/license-gplv3-blue.svg
+   :target: https://www.gnu.org/licenses/gpl-3.0
+
+.. |license: apache 2.0| image:: https://img.shields.io/badge/license-apache%202.0-blue.svg
+   :target: https://opensource.org/licenses/apache-2.0
+
+Copyright (C) 2024 - 2026 by `vroncevic.github.io/ats_coverage <https://vroncevic.github.io/ats_coverage>`_
+
+**ats_coverage** is free software; you can redistribute it and/or modify
+it under the same terms as Python itself, either Python version 3.x or,
+at your option, any later version of Python 3 you may have available.
+
+Lets help and support PSF.
+
+|python software foundation|
+
+.. |python software foundation| image:: https://raw.githubusercontent.com/vroncevic/ats_coverage/dev/docs/psf-logo-alpha.png
+   :target: https://www.python.org/psf/
+
+|donate|
+
+.. |donate| image:: https://www.paypalobjects.com/en_us/i/btn/btn_donatecc_lg.gif
+   :target: https://www.python.org/psf/donations/
+
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

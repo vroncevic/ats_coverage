@@ -380,11 +380,10 @@ def update_structure(pro_name: str, section: str, file_path: str = 'README.md') 
                     replace_mode = True
                     continue
 
-                if 'Features' in line:
+                if replace_mode and line.strip() and not line.startswith((' ', '\t')):
                     inside_tool_structure = False
                     replace_mode = False
-                    new_lines.append(line)
-                    continue
+
             else:
                 if '###' in line and 'Code coverage' in line:
                     inside_tool_structure = False
