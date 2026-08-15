@@ -154,7 +154,7 @@ class ATSCoverageCoreTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import find_root_package
+        from ats_updater import find_root_package
 
         submodule_path = str((self.pkg_dir / "submodule.py").resolve())
         root_package = find_root_package(submodule_path)
@@ -193,7 +193,7 @@ class ATSCoverageCoreTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import generate_tree_lines
+        from ats_updater import generate_tree_lines
 
         # In ats_coverage.py, generate_tree_lines enforces that the path is a directory.
         # Passing a file path should raise ValueError.
@@ -404,7 +404,7 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import find_root_package
+        from ats_updater import find_root_package
 
         with self.assertRaises(TypeError):
             find_root_package(123)
@@ -437,7 +437,7 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import generate_tree_lines
+        from ats_updater import generate_tree_lines
 
         with self.assertRaises(ValueError):
             generate_tree_lines("nonexistent_path")
@@ -505,7 +505,7 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import generate_tree_lines
+        from ats_updater import generate_tree_lines
 
         dummy_dir = Path("dummy_dir")
         dummy_dir.mkdir(exist_ok=True)

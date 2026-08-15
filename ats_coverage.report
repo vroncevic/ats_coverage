@@ -1,7 +1,0 @@
-************* Module ats_coverage
-ats_coverage.py:30:0: W0611: Unused find_root_package imported from ats_updater (unused-import)
-ats_coverage.py:30:0: W0611: Unused generate_tree_lines imported from ats_updater (unused-import)
-
-------------------------------------------------------------------
-Your code has been rated at 9.67/10 (previous run: 9.76/10, -0.09)
-

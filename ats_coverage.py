@@ -30,11 +30,9 @@ from coverage import Coverage
 from ats_updater import (
     check_exists,
     load_report,
-    find_root_package,
     update_readme,
     update_structure,
     update_index_coverage,
-    generate_tree_lines,
 )
 
 __author__ = 'Vladimir Roncevic'
