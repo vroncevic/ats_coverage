@@ -4,11 +4,13 @@ on:
     branches: [ main ]
     paths:
       - 'ats_coverage.py'
+      - 'ats_updater.py'
       - 'setup.py'
   pull_request:
     branches: [ main ]
     paths:
       - 'ats_coverage.py'
+      - 'ats_updater.py'
       - 'setup.py'
 jobs:
   build:
