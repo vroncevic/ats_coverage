@@ -38,7 +38,7 @@ __author__: str = 'Vladimir Roncevic'
 __copyright__: str = '(C) 2026, https://vroncevic.github.io/ats_coverage'
 __credits__: list[str] = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__: str = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__: str = '4.0.0'
+__version__: str = '5.0.0'
 __maintainer__: str = 'Vladimir Roncevic'
 __email__: str = 'elektron.ronca@gmail.com'
 __status__: str = 'Updated'
@@ -134,6 +134,18 @@ class ATSMainScriptTestCase(ATSCoverageBaseTestCase):
                 run_path(SCRIPT_PATH, run_name="__main__")
             self.assertEqual(cm.exception.code, 0)
 
+    def test_main_script_failure_no_arguments(self) -> None:
+        '''
+            Test executing ats_coverage.py as __main__ with no arguments.
+
+            :exceptions: None.
+        '''
+        with patch("sys.argv", ["ats_coverage.py"]):
+            with self.assertRaises(SystemExit) as cm:
+                run_path(SCRIPT_PATH, run_name="__main__")
+            self.assertEqual(cm.exception.code, 128)
+
 
 if __name__ == '__main__':
     unittest.main()
+
