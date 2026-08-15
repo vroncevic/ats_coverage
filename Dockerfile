@@ -40,6 +40,7 @@ COPY requirements.txt /
 RUN pip3 install -r requirements.txt
 RUN rm -f requirements.txt
 COPY ats_coverage.py /
+COPY ats_updater.py /
 COPY setup.py /
 COPY README.md /
 COPY LICENSE /
@@ -49,7 +50,8 @@ RUN mkdir /tests/
 COPY tests /tests/
 RUN python3 -m build --no-isolation --wheel
 RUN pip3 install ./dist/ats_coverage-*-py3-none-any.whl
-RUN rm -rf /ats_coverage*
+RUN rm -f /ats_coverage.py
+RUN rm -f /ats_updater.py
 RUN rm -f setup.py
 RUN rm -f README.md
 RUN rm -f LICENSE
