@@ -515,6 +515,20 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
         self.assertEqual(dirs, 1)
         self.assertEqual(files, 1)
 
+    def test_generate_tree_lines_single_file_non_dir(self) -> None:
+        '''
+            Test tree generation with single file when not a directory.
+
+            :exceptions: None.
+        '''
+        from ats_updater import generate_tree_lines
+        file_path = Path("dummy_file.py")
+        file_path.write_text("# dummy", encoding="utf-8")
+        lines, dirs, files = generate_tree_lines("dummy_file")
+        self.assertEqual(lines, ["    dummy_file.py\n"])
+        self.assertEqual(dirs, 0)
+        self.assertEqual(files, 1)
+
     def test_update_structure_rst(self) -> None:
         '''
             Test update structure with RST file format.
@@ -696,6 +710,46 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
         '''
         from ats_coverage import _run_tests_and_collect
         _run_tests_and_collect("dummy_package")
+
+    def test_run_coverage_mocked(self) -> None:
+        '''
+            Test run_coverage with mocked Coverage class to avoid breaking outer trace.
+
+            :exceptions: None.
+        '''
+        from ats_coverage import run_coverage
+        with patch("ats_coverage.Coverage") as mock_cov:
+            mock_cov_instance = mock_cov.return_value
+            with patch("ats_coverage._run_tests_and_collect") as mock_run:
+                run_coverage("dummy_package")
+                mock_cov_instance.start.assert_called_once()
+                mock_run.assert_called_once_with("dummy_package")
+                mock_cov_instance.stop.assert_called_once()
+                mock_cov_instance.save.assert_called_once()
+
+    def test_main_script_success(self) -> None:
+        '''
+            Test executing ats_coverage.py as __main__ successfully.
+
+            :exceptions: None.
+        '''
+        readme_path = Path("README.md")
+        readme_path.write_text(self.readme_content, encoding="utf-8")
+
+        docs_dir = Path("docs/source")
+        docs_dir.mkdir(parents=True, exist_ok=True)
+        (docs_dir / "index.rst").write_text(
+            "Some header\n\n"
+            "Tool structure\n"
+            ".. code-block:: bash\n\n"
+            "     existing structure\n\n"
+            "Next Section\n",
+            encoding="utf-8"
+        )
+        with patch("sys.argv", ["ats_coverage.py", "dummy_package"]):
+            with self.assertRaises(SystemExit) as cm:
+                run_path(SCRIPT_PATH, run_name="__main__")
+            self.assertEqual(cm.exception.code, 0)
 
 
 if __name__ == '__main__':
