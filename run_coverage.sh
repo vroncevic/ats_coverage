@@ -7,6 +7,6 @@
 # @author  Vladimir Roncevic <elektron.ronca@gmail.com>
 #
 
-python3 ats_coverage.py
+python3 ats_coverage.py ats_coverage
 pylint ats_coverage.py > ats_coverage.report
 echo "Done"

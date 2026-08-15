@@ -11,7 +11,6 @@ Execute
 '''
 
 import os
-import sys
 import shutil
 import subprocess
 from pathlib import Path
@@ -82,9 +81,9 @@ def main():
 
     try:
         # 4. Run ats_coverage.py script
-        print("Running: python3 ats_coverage.py -n demo_package")
+        print("Running: python3 ats_coverage.py demo_package")
         result = subprocess.run(
-            ["python3", "ats_coverage.py", "-n", "demo_package"],
+            ["python3", "ats_coverage.py", "demo_package"],
             capture_output=True,
             text=True
         )
