@@ -56,7 +56,7 @@ setup(
     keywords='code, coverage, automation',
     platforms='any',
     classifiers=PYP_CLASSIFIERS,
-    py_modules=['ats_coverage'],
+    py_modules=['ats_coverage', 'ats_updater'],
     install_requires=['ats_utilities', 'coverage'],
     data_files=[('', ['py.typed'])],
     entry_points={

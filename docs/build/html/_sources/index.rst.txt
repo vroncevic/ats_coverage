@@ -33,8 +33,8 @@ other information that should be provided before the tool is installed.
    self
    modules
 
-Installation
--------------
+🚀 Installation
+-----------------
 
 |ats_coverage python3 build|
 
@@ -71,18 +71,17 @@ You can use Docker to create image/container, or You can use pip to install
     # pyton3
     pip3 install ats_coverage
 
-Dependencies
--------------
+📦 Dependencies
+-----------------
 
 **ats_coverage** requires next modules and libraries
 
-* `ats-utilities - Python App/Tool/Script Utilities <https://pypi.org/project/ats-utilities/>`_
 * `coverage - Code coverage measurement for Python <https://pypi.org/project/coverage/>`_
 * `pathlib - Object-oriented filesystem paths <https://pypi.org/project/pathlib/>`_
 
 
-Tool structure
----------------
+📁 Tool structure
+-------------------
 
 **ats_coverage** is based on OOP.
 
