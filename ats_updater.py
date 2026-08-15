@@ -23,14 +23,14 @@ from __future__ import annotations
 
 from sys import stderr
 from json import load
-from os.path import basename, dirname
+from os.path import basename
 from pathlib import Path
 
 __author__ = 'Vladimir Roncevic'
 __copyright__ = '(C) 2026, https://vroncevic.github.io/ats_coverage'
 __credits__ = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__ = '3.0.0'
+__version__ = '4.0.0'
 __maintainer__ = 'Vladimir Roncevic'
 __email__ = 'elektron.ronca@gmail.com'
 __status__ = 'Updated'
@@ -277,16 +277,15 @@ def generate_tree_lines(pro_name: str) -> tuple[list[str], int, int]:
     return lines, num_dirs + 1, num_files
 
 
-def update_structure(pro_name: str, section: str, file_path: str = 'README.md') -> None:
+def update_structure(pro_name: str, file_path: str = 'README.md') -> None:
     '''
         Updates file with package directory structure (supports Markdown and reStructuredText).
 
         :param pro_name: Project name.
-        :param section: Section name.
         :param file_path: Path to the target file.
         :exceptions:
             | TypeError:  The parameter pro_name type validation failed.
-            | TypeError:  The parameter section type validation failed.
+            | TypeError:  The parameter file_path type validation failed.
             | ValueError: The file with name does not exist.
     '''
     check_exists(file_path)
@@ -301,24 +300,25 @@ def update_structure(pro_name: str, section: str, file_path: str = 'README.md') 
         stderr.write(f'{exc}\n')
         return
 
+    structure_sections: tuple[str, ...] = ('Tool structure', 'Framework structure')
     new_lines: list[str] = []
-    inside_tool_structure: bool = False
+    inside_structure: bool = False
     replace_mode: bool = False
     is_rst: bool = file_path.endswith('.rst')
 
     for line in lines:
         if is_rst:
-            if section in line:
-                inside_tool_structure = True
+            if any(sec in line for sec in structure_sections):
+                inside_structure = True
                 new_lines.append(line)
                 continue
         else:
-            if '###' in line and section in line:
-                inside_tool_structure = True
+            if '###' in line and any(sec in line for sec in structure_sections):
+                inside_structure = True
                 new_lines.append(line)
                 continue
 
-        if inside_tool_structure:
+        if inside_structure:
             if is_rst:
                 if '..' in line and 'code-block' in line:
                     new_lines.append(line)
@@ -331,12 +331,12 @@ def update_structure(pro_name: str, section: str, file_path: str = 'README.md') 
                     continue
 
                 if replace_mode and line.strip() and not line.startswith((' ', '\t')):
-                    inside_tool_structure = False
+                    inside_structure = False
                     replace_mode = False
 
             else:
                 if '###' in line and 'Code coverage' in line:
-                    inside_tool_structure = False
+                    inside_structure = False
                     replace_mode = False
                     new_lines.append(line)
                     continue

@@ -27,7 +27,7 @@ __author__: str = 'Vladimir Roncevic'
 __copyright__: str = '(C) 2026, https://vroncevic.github.io/ats_coverage'
 __credits__: list[str] = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__: str = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__: str = '3.0.0'
+__version__: str = '4.0.0'
 __maintainer__: str = 'Vladimir Roncevic'
 __email__: str = 'elektron.ronca@gmail.com'
 __status__: str = 'Updated'
@@ -45,7 +45,7 @@ PYP_CLASSIFIERS: list[str] = SUPPORTED_PY_VERSIONS
 
 setup(
     name='ats_coverage',
-    version='3.0.0',
+    version='4.0.0',
     description='Python code coverage automation',
     author='Vladimir Roncevic',
     author_email='elektron.ronca@gmail.com',

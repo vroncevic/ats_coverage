@@ -23,14 +23,24 @@ Execute
 
 import os
 import sys
-import unittest
 import tempfile
+import subprocess
+import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from runpy import run_path
 
-# Ensure parent directory is in sys.path to import ats_coverage
 sys.path.append(str(Path(__file__).parent.parent))
+
+from ats_updater import generate_tree_lines
+from ats_coverage import (
+    run_coverage,
+    load_report,
+    update_readme,
+    update_structure,
+    update_index_coverage,
+    _run_tests_and_collect,
+)
 
 SCRIPT_PATH = str(Path(__file__).parent.parent / "ats_coverage.py")
 
@@ -58,29 +68,25 @@ class ATSCoverageBaseTestCase(unittest.TestCase):
         self.temp_dir = tempfile.TemporaryDirectory()
         os.chdir(self.temp_dir.name)
 
-        # Insert temp directory path to sys.path so dynamic discovery works
         sys.path.insert(0, self.temp_dir.name)
 
-        # Clear any cached imports from previous runs
-        for name, module in list(sys.modules.items()):
+        for name in list(sys.modules.keys()):
             if name.startswith("dummy_package") or "dummy_test" in name or name.startswith("ats_coverage"):
                 sys.modules.pop(name, None)
             elif name == "tests" or name.startswith("tests."):
                 sys.modules.pop(name, None)
 
-        # Create dummy package with a subdirectory to cover _build_tree directories traversal
         self.pkg_dir = Path("dummy_package")
-        self.pkg_dir.mkdir()
+        self.pkg_dir.mkdir(parents=True, exist_ok=True)
         (self.pkg_dir / "__init__.py").write_text("def hello() -> str:\n    return 'world'\n", encoding="utf-8")
         (self.pkg_dir / "submodule.py").write_text("def add(a: int, b: int) -> int:\n    return a + b\n", encoding="utf-8")
         
         self.pkg_subdir = self.pkg_dir / "subdir"
-        self.pkg_subdir.mkdir()
+        self.pkg_subdir.mkdir(parents=True, exist_ok=True)
         (self.pkg_subdir / "file.py").write_text("def sub() -> None:\n    pass\n", encoding="utf-8")
 
-        # Create dummy test directory and test
         self.test_dir = Path("tests")
-        self.test_dir.mkdir()
+        self.test_dir.mkdir(parents=True, exist_ok=True)
         (self.test_dir / "__init__.py").write_text("", encoding="utf-8")
         (self.test_dir / "dummy_test.py").write_text(
             "import unittest\n"
@@ -94,7 +100,6 @@ class ATSCoverageBaseTestCase(unittest.TestCase):
             encoding="utf-8"
         )
 
-        # Create dummy README.md with required tags and some inside content to trigger replace_mode continue blocks
         self.readme_content = (
             "# Dummy Project\n\n"
             "### Tool structure\n"
@@ -123,8 +128,7 @@ class ATSCoverageBaseTestCase(unittest.TestCase):
         os.chdir(self.old_cwd)
         self.temp_dir.cleanup()
 
-        # Clean up any loaded dummy modules to prevent leaking to other tests
-        for name, module in list(sys.modules.items()):
+        for name in list(sys.modules.keys()):
             if name.startswith("dummy_package") or "dummy_test" in name or name.startswith("ats_coverage"):
                 sys.modules.pop(name, None)
             elif name == "tests" or name.startswith("tests."):
@@ -146,6 +150,7 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
                 | test_generate_tree_lines_single_file_success - Test tree generation with single file.
                 | test_generate_tree_lines_single_file_non_dir - Test tree generation with single file when not a directory.
                 | test_update_structure_rst - Test update structure with RST file format.
+                | test_update_structure_rst_framework - Test update structure with RST framework structure.
                 | test_update_index_coverage - Test index coverage CSV updating.
                 | test_update_index_coverage_os_error - Test index coverage handling of OSError.
                 | test_load_report_os_error - Test load report handling of OSError.
@@ -166,10 +171,8 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_updater import generate_tree_lines
-
         dummy_dir = Path("dummy_dir")
-        dummy_dir.mkdir(exist_ok=True)
+        dummy_dir.mkdir(parents=True, exist_ok=True)
         (dummy_dir / "dummy_file.py").write_text("# dummy", encoding="utf-8")
         lines, dirs, files = generate_tree_lines("dummy_dir")
         self.assertEqual(lines, ["    dummy_dir/\n", "         └── dummy_file.py\n"])
@@ -182,7 +185,6 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_updater import generate_tree_lines
         file_path = Path("dummy_file.py")
         file_path.write_text("# dummy", encoding="utf-8")
         lines, dirs, files = generate_tree_lines("dummy_file")
@@ -196,8 +198,6 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_structure
-
         rst_path = Path("index.rst")
         rst_content = (
             "Some header\n\n"
@@ -207,7 +207,28 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
             "Next Section\n"
         )
         rst_path.write_text(rst_content, encoding="utf-8")
-        update_structure("dummy_package", "Tool structure", "index.rst")
+        update_structure("dummy_package", "index.rst")
+
+        updated_rst = rst_path.read_text(encoding="utf-8")
+        self.assertIn("dummy_package/", updated_rst)
+        self.assertIn("Next Section", updated_rst)
+
+    def test_update_structure_rst_framework(self) -> None:
+        '''
+            Test update structure with RST framework structure.
+
+            :exceptions: None.
+        '''
+        rst_path = Path("index.rst")
+        rst_content = (
+            "Some header\n\n"
+            "Framework structure\n"
+            ".. code-block:: bash\n\n"
+            "     existing structure\n\n"
+            "Next Section\n"
+        )
+        rst_path.write_text(rst_content, encoding="utf-8")
+        update_structure("dummy_package", "index.rst")
 
         updated_rst = rst_path.read_text(encoding="utf-8")
         self.assertIn("dummy_package/", updated_rst)
@@ -219,13 +240,10 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import run_coverage, load_report, update_index_coverage
-
         run_coverage("dummy_package")
         report_file = "dummy_package.json"
         report_data = load_report(report_file)
 
-        # Mock a file outside of root package to hit fallback code path
         report_data["files"]["/some/other/file.py"] = {
             "summary": {
                 "num_statements": 10,
@@ -252,11 +270,8 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_index_coverage
-
         docs_dir = Path("docs/source")
         docs_dir.mkdir(parents=True, exist_ok=True)
-        # Passing a directory path as csv_path will trigger OSError on open()
         update_index_coverage(
             {"files": {}, "totals": {"num_statements": "0", "missing_lines": "0", "percent_covered_display": "0"}},
             csv_path=str(docs_dir)
@@ -268,7 +283,6 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import load_report
         dummy_file = Path("dummy_file.json")
         dummy_file.write_text("{}", encoding="utf-8")
         with patch("builtins.open", side_effect=OSError("Mocked read error")):
@@ -281,7 +295,6 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_readme
         with patch("builtins.open", side_effect=OSError("Mocked read error")):
             update_readme({"files": {}})
 
@@ -291,9 +304,8 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_structure
         with patch("builtins.open", side_effect=OSError("Mocked read error")):
-            update_structure("dummy_package", "Tool structure")
+            update_structure("dummy_package")
 
     def test_update_structure_write_os_error(self) -> None:
         '''
@@ -301,7 +313,6 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_structure
         original_open = open
         def mock_open_func(file, mode='r', *args, **kwargs):
             if 'w' in mode:
@@ -309,7 +320,7 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
             return original_open(file, mode, *args, **kwargs)
 
         with patch("builtins.open", side_effect=mock_open_func):
-            update_structure("dummy_package", "Tool structure")
+            update_structure("dummy_package")
 
     def test_main_script_success(self) -> None:
         '''
@@ -326,7 +337,6 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
             ".. end details\n",
             encoding="utf-8"
         )
-        import subprocess
         res = subprocess.run(["python3", SCRIPT_PATH, "dummy_package"])
         self.assertEqual(res.returncode, 0)
 
@@ -346,7 +356,7 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
             encoding="utf-8"
         )
         with patch("sys.argv", ["ats_coverage.py", "dummy_package"]):
-            with patch("ats_updater.load", return_value=None):
+            with patch("ats_updater.load_report", return_value={}):
                 with self.assertRaises(SystemExit) as cm:
                     run_path(SCRIPT_PATH, run_name="__main__")
                 self.assertEqual(cm.exception.code, 129)
@@ -358,7 +368,7 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
             :exceptions: None.
         '''
         with patch("sys.argv", ["ats_coverage.py", "dummy_package"]):
-            with patch("coverage.Coverage", side_effect=TypeError("Mocked error")):
+            with patch("ats_coverage.run_coverage", side_effect=TypeError("Mocked error")):
                 with self.assertRaises(SystemExit) as cm:
                     run_path(SCRIPT_PATH, run_name="__main__")
                 self.assertEqual(cm.exception.code, 128)
@@ -369,24 +379,39 @@ class ATSCoverageExtraTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import _run_tests_and_collect
         _run_tests_and_collect("dummy_package")
 
     def test_run_coverage_mocked(self) -> None:
         '''
-            Test run_coverage with mocked Coverage class to avoid breaking outer trace.
+            Test run_coverage with mocked Coverage class.
 
             :exceptions: None.
         '''
-        from ats_coverage import run_coverage
-        with patch("ats_coverage.Coverage") as mock_cov:
-            mock_cov_instance = mock_cov.return_value
-            with patch("ats_coverage._run_tests_and_collect") as mock_run:
-                run_coverage("dummy_package")
-                mock_cov_instance.start.assert_called_once()
-                mock_run.assert_called_once_with("dummy_package")
-                mock_cov_instance.stop.assert_called_once()
-                mock_cov_instance.save.assert_called_once()
+        import ats_coverage
+
+        with patch("ats_coverage.check_exists") as mock_check, \
+             patch("ats_coverage.Coverage") as mock_cov, \
+             patch("ats_coverage._run_tests_and_collect") as mock_run:
+            
+            mock_instance = MagicMock()
+            mock_cov.return_value = mock_instance
+
+            ats_coverage.run_coverage("dummy_package")
+
+            mock_check.assert_called_once()
+            mock_cov.assert_called_once_with(
+                source=["dummy_package"],
+                config_file=".coveragerc",
+                data_file=".coverage.dummy_package"
+            )
+            mock_instance.start.assert_called_once()
+            mock_run.assert_called_once_with("dummy_package")
+            mock_instance.stop.assert_called_once()
+            mock_instance.save.assert_called_once()
+            mock_instance.report.assert_called_once()
+            mock_instance.json_report.assert_called_once_with(outfile="dummy_package.json")
+            mock_instance.xml_report.assert_called_once_with(outfile="dummy_package.xml")
+            mock_instance.html_report.assert_called_once_with(directory="htmlcov")
 
     def test_main_script_success_run_path(self) -> None:
         '''

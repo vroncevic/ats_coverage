@@ -39,7 +39,7 @@ __author__ = 'Vladimir Roncevic'
 __copyright__ = '(C) 2026, https://vroncevic.github.io/ats_coverage'
 __credits__ = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__ = '3.0.0'
+__version__ = '4.0.0'
 __maintainer__ = 'Vladimir Roncevic'
 __email__ = 'elektron.ronca@gmail.com'
 __status__ = 'Updated'
@@ -111,9 +111,9 @@ if __name__ == "__main__":
 
         if report_data:
             update_readme(report_data)
-            update_structure(project_name, 'Tool structure', 'README.md')
+            update_structure(project_name, 'README.md')
             update_index_coverage(report_data)
-            update_structure(project_name, 'Tool structure', 'docs/source/index.rst')
+            update_structure(project_name, 'docs/source/index.rst')
             sys_exit(0)
 
         stderr.write('ats_coverage: failed to generate coverage report\n')
