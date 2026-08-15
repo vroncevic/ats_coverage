@@ -5,13 +5,13 @@ permissions:
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
     paths:
       - 'ats_coverage.py'
       - 'ats_updater.py'
       - 'setup.py'
   pull_request:
-    branches: [ dev ]
+    branches: [ main ]
     paths:
       - 'ats_coverage.py'
       - 'ats_updater.py'
