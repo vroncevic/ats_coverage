@@ -26,6 +26,15 @@ from json import load
 from os.path import basename, dirname
 from pathlib import Path
 
+__author__ = 'Vladimir Roncevic'
+__copyright__ = '(C) 2026, https://vroncevic.github.io/ats_coverage'
+__credits__ = ['Vladimir Roncevic', 'Python Software Foundation']
+__license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
+__version__ = '3.0.0'
+__maintainer__ = 'Vladimir Roncevic'
+__email__ = 'elektron.ronca@gmail.com'
+__status__ = 'Updated'
+
 
 def check_exists(item_path: str, is_dir: bool = False) -> None:
     '''
