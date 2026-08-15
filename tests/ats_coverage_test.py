@@ -23,14 +23,21 @@ Execute
 
 import os
 import sys
-import unittest
 import tempfile
+import subprocess
+import unittest
 from pathlib import Path
-from unittest.mock import patch
-from runpy import run_path
 
-# Ensure parent directory is in sys.path to import ats_coverage
 sys.path.append(str(Path(__file__).parent.parent))
+
+from ats_updater import find_root_package, generate_tree_lines
+from ats_coverage import (
+    run_coverage,
+    load_report,
+    update_readme,
+    update_structure,
+    check_exists,
+)
 
 SCRIPT_PATH = str(Path(__file__).parent.parent / "ats_coverage.py")
 
@@ -58,17 +65,14 @@ class ATSCoverageBaseTestCase(unittest.TestCase):
         self.temp_dir = tempfile.TemporaryDirectory()
         os.chdir(self.temp_dir.name)
 
-        # Insert temp directory path to sys.path so dynamic discovery works
         sys.path.insert(0, self.temp_dir.name)
 
-        # Clear any cached imports from previous runs
         for name, module in list(sys.modules.items()):
             if name.startswith("dummy_package") or "dummy_test" in name or name.startswith("ats_coverage"):
                 sys.modules.pop(name, None)
             elif name == "tests" or name.startswith("tests."):
                 sys.modules.pop(name, None)
 
-        # Create dummy package with a subdirectory to cover _build_tree directories traversal
         self.pkg_dir = Path("dummy_package")
         self.pkg_dir.mkdir()
         (self.pkg_dir / "__init__.py").write_text("def hello() -> str:\n    return 'world'\n", encoding="utf-8")
@@ -78,7 +82,6 @@ class ATSCoverageBaseTestCase(unittest.TestCase):
         self.pkg_subdir.mkdir()
         (self.pkg_subdir / "file.py").write_text("def sub() -> None:\n    pass\n", encoding="utf-8")
 
-        # Create dummy test directory and test
         self.test_dir = Path("tests")
         self.test_dir.mkdir()
         (self.test_dir / "__init__.py").write_text("", encoding="utf-8")
@@ -94,7 +97,6 @@ class ATSCoverageBaseTestCase(unittest.TestCase):
             encoding="utf-8"
         )
 
-        # Create dummy README.md with required tags and some inside content to trigger replace_mode continue blocks
         self.readme_content = (
             "# Dummy Project\n\n"
             "### Tool structure\n"
@@ -123,7 +125,6 @@ class ATSCoverageBaseTestCase(unittest.TestCase):
         os.chdir(self.old_cwd)
         self.temp_dir.cleanup()
 
-        # Clean up any loaded dummy modules to prevent leaking to other tests
         for name, module in list(sys.modules.items()):
             if name.startswith("dummy_package") or "dummy_test" in name or name.startswith("ats_coverage"):
                 sys.modules.pop(name, None)
@@ -154,8 +155,6 @@ class ATSCoverageCoreTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_updater import find_root_package
-
         submodule_path = str((self.pkg_dir / "submodule.py").resolve())
         root_package = find_root_package(submodule_path)
         self.assertIsNotNone(root_package)
@@ -167,9 +166,6 @@ class ATSCoverageCoreTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import run_coverage, load_report
-
-        import subprocess
         docs_dir = Path("docs/source")
         docs_dir.mkdir(parents=True, exist_ok=True)
         (docs_dir / "index.rst").write_text(
@@ -193,10 +189,6 @@ class ATSCoverageCoreTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_updater import generate_tree_lines
-
-        # In ats_coverage.py, generate_tree_lines enforces that the path is a directory.
-        # Passing a file path should raise ValueError.
         file_path = "dummy_package/__init__.py"
         with self.assertRaises(ValueError):
             generate_tree_lines(file_path)
@@ -212,6 +204,7 @@ class ATSCoverageReadmeTestCase(ATSCoverageBaseTestCase):
             :attributes: None.
             :methods:
                 | test_update_readme_and_structure - Test that README.md is updated correctly with coverage and structure.
+                | test_update_readme_and_framework_structure - Test that README.md with Framework structure is updated correctly.
                 | test_missing_readme_markers - Test that update functions skip gently if markers are missing.
                 | test_update_readme_missing_file - Test that update_readme raises ValueError when README.md is missing.
                 | test_update_structure_missing_file - Test that update_structure raises ValueError when README.md is missing.
@@ -225,9 +218,6 @@ class ATSCoverageReadmeTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import run_coverage, load_report, update_readme, update_structure
-
-        import subprocess
         docs_dir = Path("docs/source")
         docs_dir.mkdir(parents=True, exist_ok=True)
         (docs_dir / "index.rst").write_text(
@@ -241,7 +231,6 @@ class ATSCoverageReadmeTestCase(ATSCoverageBaseTestCase):
         report_file = "dummy_package.json"
         report_data = load_report(report_file)
 
-        # Mock a file outside of the root package to trigger fallback path module name resolution
         report_data["files"]["/some/other/file.py"] = {
             "summary": {
                 "num_statements": 10,
@@ -251,19 +240,36 @@ class ATSCoverageReadmeTestCase(ATSCoverageBaseTestCase):
         }
 
         update_readme(report_data)
-        update_structure("dummy_package", "Tool structure")
+        update_structure("dummy_package")
 
         updated_readme = self.readme_path.read_text(encoding="utf-8")
-        
-        # Verify coverage table is inserted
         self.assertIn("| Name | Stmts | Miss | Cover |", updated_readme)
         self.assertIn("dummy_package/__init__.py", updated_readme)
-        self.assertIn("file.py", updated_readme) # fallback module name
-        
-        # Verify structure tree is inserted
+        self.assertIn("file.py", updated_readme)
         self.assertIn("dummy_package/", updated_readme)
         self.assertIn("submodule.py", updated_readme)
-        self.assertIn("subdir/", updated_readme) # subdirectory traverse check
+        self.assertIn("subdir/", updated_readme)
+
+    def test_update_readme_and_framework_structure(self) -> None:
+        '''
+            Test that README.md with Framework structure is updated correctly.
+
+            :exceptions: None.
+        '''
+        framework_readme = (
+            "# Dummy Framework Project\n\n"
+            "### Framework structure\n"
+            "<details>\n"
+            "<summary>Structure</summary>\n"
+            "</details>\n\n"
+            "### Code coverage\n"
+        )
+        self.readme_path.write_text(framework_readme, encoding="utf-8")
+        update_structure("dummy_package")
+
+        updated_readme = self.readme_path.read_text(encoding="utf-8")
+        self.assertIn("dummy_package/", updated_readme)
+        self.assertIn("submodule.py", updated_readme)
 
     def test_missing_readme_markers(self) -> None:
         '''
@@ -271,18 +277,14 @@ class ATSCoverageReadmeTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import run_coverage, load_report, update_readme, update_structure
-
-        # Write README without markers
         self.readme_path.write_text("# Just a Title\n", encoding="utf-8")
 
         run_coverage("dummy_package")
         report_file = "dummy_package.json"
         report_data = load_report(report_file)
 
-        # Should not raise exception, just log/skip and exit
         update_readme(report_data)
-        update_structure("dummy_package", "Tool structure")
+        update_structure("dummy_package")
 
         updated_readme = self.readme_path.read_text(encoding="utf-8")
         self.assertEqual(updated_readme, "# Just a Title\n")
@@ -293,7 +295,6 @@ class ATSCoverageReadmeTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_readme
         self.readme_path.unlink()
         with self.assertRaises(ValueError):
             update_readme({"files": {}})
@@ -304,10 +305,9 @@ class ATSCoverageReadmeTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_structure
         self.readme_path.unlink()
         with self.assertRaises(ValueError):
-            update_structure("dummy_package", "Tool structure")
+            update_structure("dummy_package")
 
     def test_update_readme_missing_tags(self) -> None:
         '''
@@ -315,10 +315,8 @@ class ATSCoverageReadmeTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_readme
-        # Marker is present but tags are missing
         self.readme_path.write_text("### Code coverage\n", encoding="utf-8")
-        update_readme({"files": {}})  # Should skip without error
+        update_readme({"files": {}})
 
     def test_update_structure_missing_tags(self) -> None:
         '''
@@ -326,10 +324,8 @@ class ATSCoverageReadmeTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_structure
-        # Marker is present but tags are missing
         self.readme_path.write_text("### Tool structure\n", encoding="utf-8")
-        update_structure("dummy_package", "Tool structure")  # Should skip without error
+        update_structure("dummy_package")
 
 
 class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
@@ -360,8 +356,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import run_coverage
-
         with self.assertRaises(TypeError):
             run_coverage(123)
 
@@ -371,8 +365,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import run_coverage
-
         with self.assertRaises(ValueError):
             run_coverage("nonexistent_package")
 
@@ -382,8 +374,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import load_report
-
         with self.assertRaises(TypeError):
             load_report(123)
 
@@ -393,8 +383,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import load_report
-
         with self.assertRaises(ValueError):
             load_report("nonexistent_file.json")
 
@@ -404,8 +392,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_updater import find_root_package
-
         with self.assertRaises(TypeError):
             find_root_package(123)
 
@@ -415,8 +401,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_readme
-
         with self.assertRaises(TypeError):
             update_readme(123)
 
@@ -426,10 +410,8 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import update_structure
-
         with self.assertRaises(TypeError):
-            update_structure(123, "Tool structure")
+            update_structure(123)
 
     def test_generate_tree_lines_missing(self) -> None:
         '''
@@ -437,8 +419,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_updater import generate_tree_lines
-
         with self.assertRaises(ValueError):
             generate_tree_lines("nonexistent_path")
 
@@ -448,8 +428,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import check_exists
-
         with self.assertRaises(TypeError):
             check_exists(123)
 
@@ -459,8 +437,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import check_exists
-
         with self.assertRaises(ValueError):
             check_exists("")
 
@@ -470,8 +446,6 @@ class ATSCoverageValidationTestCase(ATSCoverageBaseTestCase):
 
             :exceptions: None.
         '''
-        from ats_coverage import check_exists
-
         with self.assertRaises(ValueError):
             check_exists("nonexistent_dir", is_dir=True)
 
