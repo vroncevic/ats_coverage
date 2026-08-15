@@ -39,7 +39,7 @@ __author__ = 'Vladimir Roncevic'
 __copyright__ = '(C) 2026, https://vroncevic.github.io/ats_coverage'
 __credits__ = ['Vladimir Roncevic', 'Python Software Foundation']
 __license__ = 'https://github.com/vroncevic/ats_coverage/blob/dev/LICENSE'
-__version__ = '4.0.0'
+__version__ = '5.0.0'
 __maintainer__ = 'Vladimir Roncevic'
 __email__ = 'elektron.ronca@gmail.com'
 __status__ = 'Updated'
@@ -103,8 +103,17 @@ def run_coverage(pro_name: str) -> None:
     stdout.write('\n--- HTML Report saved to htmlcov ---\n')
 
 
-if __name__ == "__main__":
+def main() -> None:
+    '''
+        Main execution flow.
+
+        :exceptions: None.
+    '''
     try:
+        if len(argv) < 2:
+            stderr.write('Usage: ats_coverage <project_name>\n')
+            sys_exit(128)
+
         project_name: str = argv[1]
         run_coverage(project_name)
         report_data: dict[str, object] = load_report(f'{project_name}.json')
@@ -122,3 +131,7 @@ if __name__ == "__main__":
     except (ValueError, TypeError) as err:
         stderr.write(f'ats_coverage: {err}\n')
         sys_exit(128)
+
+
+if __name__ == "__main__":
+    main()
